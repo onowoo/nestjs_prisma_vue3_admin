@@ -1,0 +1,1679 @@
+{
+	"info": {
+		"title": "isme-nest-serrve",
+		"description": "",
+		"version": "1.0.0"
+	},
+	"tags": [{
+		"name": "认证"
+	}, {
+		"name": "用户"
+	}, {
+		"name": "权限"
+	}, {
+		"name": "角色"
+	}],
+	"paths": {
+		"/auth/login": {
+			"post": {
+				"summary": "登录",
+				"deprecated": false,
+				"description": "",
+				"tags": ["认证"],
+				"parameters": [{
+					"name": "body",
+					"in": "body",
+					"schema": {
+						"type": "object",
+						"properties": {
+							"username": {
+								"type": "string"
+							},
+							"password": {
+								"type": "string"
+							},
+							"captcha": {
+								"type": "string"
+							}
+						},
+						"required": ["password", "captcha", "username"]
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {
+								"code": {
+									"type": "integer"
+								},
+								"message": {
+									"type": "string"
+								},
+								"data": {
+									"type": "object",
+									"properties": {
+										"accessToken": {
+											"type": "string"
+										}
+									},
+									"required": ["accessToken"]
+								},
+								"originUrl": {
+									"type": "string"
+								}
+							},
+							"required": ["code", "message", "data", "originUrl"]
+						}
+					}
+				},
+				"security": [],
+				"consumes": ["application/json"],
+				"produces": ["application/json"]
+			}
+		},
+		"/auth/captcha": {
+			"get": {
+				"summary": "验证码",
+				"deprecated": false,
+				"description": "",
+				"tags": ["认证"],
+				"parameters": [],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {}
+						}
+					}
+				},
+				"security": [],
+				"produces": ["application/octet-stream"]
+			}
+		},
+		"/auth/current-role/switch/{roleCode}": {
+			"post": {
+				"summary": "切换角色",
+				"deprecated": false,
+				"description": "",
+				"tags": ["认证"],
+				"parameters": [{
+					"name": "roleCode",
+					"in": "path",
+					"description": "",
+					"required": true,
+					"type": "string",
+					"x-example": "ROLE_QA"
+				}],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {
+								"code": {
+									"type": "integer"
+								},
+								"message": {
+									"type": "string"
+								},
+								"data": {
+									"type": "object",
+									"properties": {
+										"accessToken": {
+											"type": "string"
+										}
+									},
+									"required": ["accessToken"]
+								},
+								"originUrl": {
+									"type": "string"
+								}
+							},
+							"required": ["code", "message", "data", "originUrl"]
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"produces": ["application/json"]
+			}
+		},
+		"/auth/logout": {
+			"post": {
+				"summary": "退出登录",
+				"deprecated": false,
+				"description": "",
+				"tags": ["认证"],
+				"parameters": [],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {
+								"code": {
+									"type": "integer"
+								},
+								"message": {
+									"type": "string"
+								},
+								"data": {
+									"type": "boolean"
+								},
+								"originUrl": {
+									"type": "string"
+								}
+							},
+							"required": ["code", "message", "data", "originUrl"]
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"produces": ["application/json"]
+			}
+		},
+		"/user/detail": {
+			"get": {
+				"summary": "用户详情",
+				"deprecated": false,
+				"description": "",
+				"tags": ["用户"],
+				"parameters": [],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {
+								"code": {
+									"type": "integer"
+								},
+								"message": {
+									"type": "string"
+								},
+								"data": {
+									"type": "object",
+									"properties": {
+										"id": {
+											"type": "integer"
+										},
+										"username": {
+											"type": "string"
+										},
+										"enable": {
+											"type": "boolean"
+										},
+										"createTime": {
+											"type": "string"
+										},
+										"updateTime": {
+											"type": "string"
+										},
+										"profile": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "integer"
+												},
+												"nickName": {
+													"type": "string"
+												},
+												"gender": {
+													"type": "null"
+												},
+												"avatar": {
+													"type": "string"
+												},
+												"address": {
+													"type": "null"
+												},
+												"email": {
+													"type": "null"
+												},
+												"userId": {
+													"type": "integer"
+												}
+											},
+											"required": ["id", "nickName", "gender", "avatar", "address", "email",
+												"userId"
+											]
+										},
+										"roles": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "integer"
+													},
+													"code": {
+														"type": "string"
+													},
+													"name": {
+														"type": "string"
+													},
+													"enable": {
+														"type": "boolean"
+													}
+												},
+												"required": ["id", "code", "name", "enable"]
+											}
+										},
+										"currentRole": {
+											"type": "object",
+											"properties": {
+												"id": {
+													"type": "integer"
+												},
+												"code": {
+													"type": "string"
+												},
+												"name": {
+													"type": "string"
+												},
+												"enable": {
+													"type": "boolean"
+												}
+											},
+											"required": ["id", "code", "name", "enable"]
+										}
+									},
+									"required": ["id", "username", "enable", "createTime", "updateTime", "profile",
+										"roles", "currentRole"
+									]
+								},
+								"originUrl": {
+									"type": "string"
+								}
+							},
+							"required": ["code", "message", "data", "originUrl"]
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"produces": ["application/json"]
+			}
+		},
+		"/user": {
+			"get": {
+				"summary": "用户列表-分页",
+				"deprecated": false,
+				"description": "",
+				"tags": ["用户"],
+				"parameters": [{
+					"name": "username",
+					"in": "query",
+					"description": "",
+					"required": false,
+					"type": "string",
+					"x-example": "admin"
+				}, {
+					"name": "pageNo",
+					"in": "query",
+					"description": "",
+					"required": true,
+					"type": "integer",
+					"x-example": 1
+				}, {
+					"name": "pageSize",
+					"in": "query",
+					"description": "",
+					"required": true,
+					"type": "integer",
+					"x-example": 10
+				}],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {
+								"code": {
+									"type": "integer"
+								},
+								"message": {
+									"type": "string"
+								},
+								"data": {
+									"type": "object",
+									"properties": {
+										"pageData": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "integer"
+													},
+													"username": {
+														"type": "string"
+													},
+													"enable": {
+														"type": "boolean"
+													},
+													"createTime": {
+														"type": "string"
+													},
+													"updateTime": {
+														"type": "string"
+													},
+													"roles": {
+														"type": "array",
+														"items": {
+															"type": "object",
+															"properties": {
+																"id": {
+																	"type": "integer"
+																},
+																"code": {
+																	"type": "string"
+																},
+																"name": {
+																	"type": "string"
+																},
+																"enable": {
+																	"type": "boolean"
+																}
+															},
+															"required": ["id", "code", "name", "enable"]
+														}
+													},
+													"gender": {
+														"type": "null"
+													},
+													"avatar": {
+														"type": "string"
+													},
+													"address": {
+														"type": "null"
+													},
+													"email": {
+														"type": "null"
+													}
+												}
+											}
+										},
+										"total": {
+											"type": "integer"
+										}
+									},
+									"required": ["pageData", "total"]
+								},
+								"originUrl": {
+									"type": "string"
+								}
+							},
+							"required": ["code", "message", "data", "originUrl"]
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"produces": ["application/json"]
+			},
+			"post": {
+				"summary": "新增用户",
+				"deprecated": false,
+				"description": "",
+				"tags": ["用户"],
+				"parameters": [],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {}
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"produces": ["application/json"]
+			}
+		},
+		"/user/{id}": {
+			"delete": {
+				"summary": "删除用户",
+				"deprecated": false,
+				"description": "",
+				"tags": ["用户"],
+				"parameters": [{
+					"name": "id",
+					"in": "path",
+					"description": "",
+					"required": true,
+					"type": "string"
+				}],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {}
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"produces": ["application/json"]
+			},
+			"patch": {
+				"summary": "修改用户",
+				"deprecated": false,
+				"description": "",
+				"tags": ["用户"],
+				"parameters": [{
+					"name": "id",
+					"in": "path",
+					"description": "",
+					"required": true,
+					"type": "string"
+				}],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {}
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"produces": ["application/json"]
+			}
+		},
+		"/user/password/reset/{id}": {
+			"patch": {
+				"summary": "重置用户密码",
+				"deprecated": false,
+				"description": "",
+				"tags": ["用户"],
+				"parameters": [{
+					"name": "id",
+					"in": "path",
+					"description": "",
+					"required": true,
+					"type": "string"
+				}],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {}
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"produces": ["application/json"]
+			}
+		},
+		"/role/permissions/tree": {
+			"get": {
+				"summary": "角色权限树-by token",
+				"deprecated": false,
+				"description": "",
+				"tags": ["权限"],
+				"parameters": [],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {
+								"code": {
+									"type": "integer"
+								},
+								"message": {
+									"type": "string"
+								},
+								"data": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "integer"
+											},
+											"name": {
+												"type": "string"
+											},
+											"code": {
+												"type": "string"
+											},
+											"type": {
+												"type": "string"
+											},
+											"parentId": {
+												"type": "null"
+											},
+											"path": {
+												"type": "string",
+												"x-nullable": true
+											},
+											"redirect": {
+												"type": "null"
+											},
+											"icon": {
+												"type": "string"
+											},
+											"component": {
+												"type": "string",
+												"x-nullable": true
+											},
+											"layout": {
+												"type": "string",
+												"x-nullable": true
+											},
+											"keepAlive": {
+												"type": "null"
+											},
+											"method": {
+												"type": "null"
+											},
+											"description": {
+												"type": "null"
+											},
+											"show": {
+												"type": "boolean"
+											},
+											"enable": {
+												"type": "boolean"
+											},
+											"order": {
+												"type": "integer"
+											},
+											"children": {
+												"type": "array",
+												"items": {
+													"type": "object",
+													"properties": {
+														"id": {
+															"type": "integer"
+														},
+														"name": {
+															"type": "string"
+														},
+														"code": {
+															"type": "string"
+														},
+														"type": {
+															"type": "string"
+														},
+														"parentId": {
+															"type": "integer"
+														},
+														"path": {
+															"type": "string"
+														},
+														"redirect": {
+															"type": "null"
+														},
+														"icon": {
+															"type": "string"
+														},
+														"component": {
+															"type": "string"
+														},
+														"layout": {
+															"type": "string",
+															"x-nullable": true
+														},
+														"keepAlive": {
+															"type": "boolean",
+															"x-nullable": true
+														},
+														"method": {
+															"type": "null"
+														},
+														"description": {
+															"type": "null"
+														},
+														"show": {
+															"type": "boolean"
+														},
+														"enable": {
+															"type": "boolean"
+														},
+														"order": {
+															"type": "integer"
+														},
+														"children": {
+															"type": "array",
+															"items": {
+																"type": "object",
+																"properties": {
+																	"id": {
+																		"type": "integer"
+																	},
+																	"name": {
+																		"type": "string"
+																	},
+																	"code": {
+																		"type": "string"
+																	},
+																	"type": {
+																		"type": "string"
+																	},
+																	"parentId": {
+																		"type": "integer"
+																	},
+																	"path": {
+																		"type": "string",
+																		"x-nullable": true
+																	},
+																	"redirect": {
+																		"type": "null"
+																	},
+																	"icon": {
+																		"type": "string",
+																		"x-nullable": true
+																	},
+																	"component": {
+																		"type": "string",
+																		"x-nullable": true
+																	},
+																	"layout": {
+																		"type": "string",
+																		"x-nullable": true
+																	},
+																	"keepAlive": {
+																		"type": "null"
+																	},
+																	"method": {
+																		"type": "null"
+																	},
+																	"description": {
+																		"type": "null"
+																	},
+																	"show": {
+																		"type": "boolean"
+																	},
+																	"enable": {
+																		"type": "boolean"
+																	},
+																	"order": {
+																		"type": "integer"
+																	}
+																},
+																"required": ["id", "name", "code", "type", "parentId",
+																	"path", "redirect", "icon", "component",
+																	"layout", "keepAlive", "method", "description",
+																	"show", "enable", "order"
+																]
+															}
+														}
+													},
+													"required": ["id", "name", "code", "type", "parentId", "path",
+														"redirect", "icon", "component", "layout", "keepAlive",
+														"method", "description", "show", "enable", "order",
+														"children"
+													]
+												}
+											}
+										},
+										"required": ["id", "name", "code", "type", "parentId", "path", "redirect",
+											"icon", "component", "layout", "keepAlive", "method", "description",
+											"show", "enable", "order", "children"
+										]
+									}
+								},
+								"originUrl": {
+									"type": "string"
+								}
+							},
+							"required": ["code", "message", "data", "originUrl"]
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"produces": ["application/json"]
+			}
+		},
+		"/permission/menu/tree": {
+			"get": {
+				"summary": "权限树-菜单",
+				"deprecated": false,
+				"description": "",
+				"tags": ["权限"],
+				"parameters": [],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {
+								"code": {
+									"type": "integer"
+								},
+								"message": {
+									"type": "string"
+								},
+								"data": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "integer"
+											},
+											"name": {
+												"type": "string"
+											},
+											"code": {
+												"type": "string"
+											},
+											"type": {
+												"type": "string"
+											},
+											"parentId": {
+												"type": "null"
+											},
+											"path": {
+												"type": "string",
+												"x-nullable": true
+											},
+											"redirect": {
+												"type": "null"
+											},
+											"icon": {
+												"type": "string"
+											},
+											"component": {
+												"type": "string",
+												"x-nullable": true
+											},
+											"layout": {
+												"type": "string",
+												"x-nullable": true
+											},
+											"keepAlive": {
+												"type": "null"
+											},
+											"method": {
+												"type": "null"
+											},
+											"description": {
+												"type": "null"
+											},
+											"show": {
+												"type": "boolean"
+											},
+											"enable": {
+												"type": "boolean"
+											},
+											"order": {
+												"type": "integer"
+											},
+											"children": {
+												"type": "array",
+												"items": {
+													"type": "object",
+													"properties": {
+														"id": {
+															"type": "integer"
+														},
+														"name": {
+															"type": "string"
+														},
+														"code": {
+															"type": "string"
+														},
+														"type": {
+															"type": "string"
+														},
+														"parentId": {
+															"type": "integer"
+														},
+														"path": {
+															"type": "string"
+														},
+														"redirect": {
+															"type": "null"
+														},
+														"icon": {
+															"type": "string"
+														},
+														"component": {
+															"type": "string"
+														},
+														"layout": {
+															"type": "string",
+															"x-nullable": true
+														},
+														"keepAlive": {
+															"type": "boolean",
+															"x-nullable": true
+														},
+														"method": {
+															"type": "null"
+														},
+														"description": {
+															"type": "null"
+														},
+														"show": {
+															"type": "boolean"
+														},
+														"enable": {
+															"type": "boolean"
+														},
+														"order": {
+															"type": "integer"
+														},
+														"children": {
+															"type": "array",
+															"items": {
+																"type": "object",
+																"properties": {
+																	"id": {
+																		"type": "integer"
+																	},
+																	"name": {
+																		"type": "string"
+																	},
+																	"code": {
+																		"type": "string"
+																	},
+																	"type": {
+																		"type": "string"
+																	},
+																	"parentId": {
+																		"type": "integer"
+																	},
+																	"path": {
+																		"type": "string"
+																	},
+																	"redirect": {
+																		"type": "null"
+																	},
+																	"icon": {
+																		"type": "string"
+																	},
+																	"component": {
+																		"type": "string"
+																	},
+																	"layout": {
+																		"type": "string"
+																	},
+																	"keepAlive": {
+																		"type": "null"
+																	},
+																	"method": {
+																		"type": "null"
+																	},
+																	"description": {
+																		"type": "null"
+																	},
+																	"show": {
+																		"type": "boolean"
+																	},
+																	"enable": {
+																		"type": "boolean"
+																	},
+																	"order": {
+																		"type": "integer"
+																	}
+																}
+															}
+														}
+													},
+													"required": ["id", "name", "code", "type", "parentId", "path",
+														"redirect", "icon", "component", "layout", "keepAlive",
+														"method", "description", "show", "enable", "order"
+													]
+												}
+											}
+										},
+										"required": ["id", "name", "code", "type", "parentId", "path", "redirect",
+											"icon", "component", "layout", "keepAlive", "method", "description",
+											"show", "enable", "order", "children"
+										]
+									}
+								},
+								"originUrl": {
+									"type": "string"
+								}
+							},
+							"required": ["code", "message", "data", "originUrl"]
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"produces": ["application/json"]
+			}
+		},
+		"/permission/tree": {
+			"get": {
+				"summary": "权限树-all",
+				"deprecated": false,
+				"description": "",
+				"tags": ["权限"],
+				"parameters": [],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {
+								"code": {
+									"type": "integer"
+								},
+								"message": {
+									"type": "string"
+								},
+								"data": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "integer"
+											},
+											"name": {
+												"type": "string"
+											},
+											"code": {
+												"type": "string"
+											},
+											"type": {
+												"type": "string"
+											},
+											"parentId": {
+												"type": "null"
+											},
+											"path": {
+												"type": "string",
+												"x-nullable": true
+											},
+											"redirect": {
+												"type": "null"
+											},
+											"icon": {
+												"type": "string"
+											},
+											"component": {
+												"type": "string",
+												"x-nullable": true
+											},
+											"layout": {
+												"type": "string",
+												"x-nullable": true
+											},
+											"keepAlive": {
+												"type": "null"
+											},
+											"method": {
+												"type": "null"
+											},
+											"description": {
+												"type": "null"
+											},
+											"show": {
+												"type": "boolean"
+											},
+											"enable": {
+												"type": "boolean"
+											},
+											"order": {
+												"type": "integer"
+											},
+											"children": {
+												"type": "array",
+												"items": {
+													"type": "object",
+													"properties": {
+														"id": {
+															"type": "integer"
+														},
+														"name": {
+															"type": "string"
+														},
+														"code": {
+															"type": "string"
+														},
+														"type": {
+															"type": "string"
+														},
+														"parentId": {
+															"type": "integer"
+														},
+														"path": {
+															"type": "string"
+														},
+														"redirect": {
+															"type": "null"
+														},
+														"icon": {
+															"type": "string"
+														},
+														"component": {
+															"type": "string"
+														},
+														"layout": {
+															"type": "string",
+															"x-nullable": true
+														},
+														"keepAlive": {
+															"type": "boolean",
+															"x-nullable": true
+														},
+														"method": {
+															"type": "null"
+														},
+														"description": {
+															"type": "null"
+														},
+														"show": {
+															"type": "boolean"
+														},
+														"enable": {
+															"type": "boolean"
+														},
+														"order": {
+															"type": "integer"
+														},
+														"children": {
+															"type": "array",
+															"items": {
+																"type": "object",
+																"properties": {
+																	"id": {
+																		"type": "integer"
+																	},
+																	"name": {
+																		"type": "string"
+																	},
+																	"code": {
+																		"type": "string"
+																	},
+																	"type": {
+																		"type": "string"
+																	},
+																	"parentId": {
+																		"type": "integer"
+																	},
+																	"path": {
+																		"type": "string"
+																	},
+																	"redirect": {
+																		"type": "null"
+																	},
+																	"icon": {
+																		"type": "string"
+																	},
+																	"component": {
+																		"type": "string"
+																	},
+																	"layout": {
+																		"type": "string"
+																	},
+																	"keepAlive": {
+																		"type": "null"
+																	},
+																	"method": {
+																		"type": "null"
+																	},
+																	"description": {
+																		"type": "null"
+																	},
+																	"show": {
+																		"type": "boolean"
+																	},
+																	"enable": {
+																		"type": "boolean"
+																	},
+																	"order": {
+																		"type": "integer"
+																	}
+																}
+															}
+														}
+													},
+													"required": ["id", "name", "code", "type", "parentId", "path",
+														"redirect", "icon", "component", "layout", "keepAlive",
+														"method", "description", "show", "enable", "order"
+													]
+												}
+											}
+										},
+										"required": ["id", "name", "code", "type", "parentId", "path", "redirect",
+											"icon", "component", "layout", "keepAlive", "method", "description",
+											"show", "enable", "order", "children"
+										]
+									}
+								},
+								"originUrl": {
+									"type": "string"
+								}
+							},
+							"required": ["code", "message", "data", "originUrl"]
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"produces": ["application/json"]
+			}
+		},
+		"/permission": {
+			"post": {
+				"summary": "新增权限",
+				"deprecated": false,
+				"description": "",
+				"tags": ["权限"],
+				"parameters": [],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {}
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"produces": ["application/json"]
+			}
+		},
+		"/permission/{id}": {
+			"delete": {
+				"summary": "删除权限",
+				"deprecated": false,
+				"description": "",
+				"tags": ["权限"],
+				"parameters": [{
+					"name": "id",
+					"in": "path",
+					"description": "",
+					"required": true,
+					"type": "string"
+				}],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {}
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"produces": ["application/json"]
+			},
+			"patch": {
+				"summary": "修改权限",
+				"deprecated": false,
+				"description": "",
+				"tags": ["权限"],
+				"parameters": [{
+					"name": "id",
+					"in": "path",
+					"description": "",
+					"required": true,
+					"type": "string"
+				}],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {}
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"produces": ["application/json"]
+			}
+		},
+		"/permission/button/{parentId}": {
+			"get": {
+				"summary": "按钮权限-by parentId",
+				"deprecated": false,
+				"description": "",
+				"tags": ["权限"],
+				"parameters": [{
+					"name": "parentId",
+					"in": "path",
+					"description": "",
+					"required": true,
+					"type": "string"
+				}],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {
+								"code": {
+									"type": "integer"
+								},
+								"message": {
+									"type": "string"
+								},
+								"data": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "integer"
+											},
+											"name": {
+												"type": "string"
+											},
+											"code": {
+												"type": "string"
+											},
+											"type": {
+												"type": "string"
+											},
+											"parentId": {
+												"type": "integer"
+											},
+											"path": {
+												"type": "null"
+											},
+											"redirect": {
+												"type": "null"
+											},
+											"icon": {
+												"type": "null"
+											},
+											"component": {
+												"type": "null"
+											},
+											"layout": {
+												"type": "null"
+											},
+											"keepAlive": {
+												"type": "null"
+											},
+											"method": {
+												"type": "null"
+											},
+											"description": {
+												"type": "null"
+											},
+											"show": {
+												"type": "boolean"
+											},
+											"enable": {
+												"type": "boolean"
+											},
+											"order": {
+												"type": "integer"
+											}
+										}
+									}
+								},
+								"originUrl": {
+									"type": "string"
+								}
+							},
+							"required": ["code", "message", "data", "originUrl"]
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"produces": ["application/json"]
+			}
+		},
+		"/role": {
+			"post": {
+				"summary": "新增角色",
+				"deprecated": false,
+				"description": "",
+				"tags": ["角色"],
+				"parameters": [],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {}
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"produces": ["application/json"]
+			},
+			"get": {
+				"summary": "角色列表-all",
+				"deprecated": false,
+				"description": "",
+				"tags": ["角色"],
+				"parameters": [],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {
+								"code": {
+									"type": "integer"
+								},
+								"message": {
+									"type": "string"
+								},
+								"data": {
+									"type": "array",
+									"items": {
+										"type": "object",
+										"properties": {
+											"id": {
+												"type": "integer"
+											},
+											"code": {
+												"type": "string"
+											},
+											"name": {
+												"type": "string"
+											},
+											"enable": {
+												"type": "boolean"
+											}
+										},
+										"required": ["id", "code", "name", "enable"]
+									}
+								},
+								"originUrl": {
+									"type": "string"
+								}
+							},
+							"required": ["code", "message", "data", "originUrl"]
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"produces": ["application/json"]
+			}
+		},
+		"/role/page": {
+			"get": {
+				"summary": "角色列表-分页",
+				"deprecated": false,
+				"description": "",
+				"tags": ["角色"],
+				"parameters": [{
+					"name": "pageNo",
+					"in": "query",
+					"description": "",
+					"required": false,
+					"type": "integer",
+					"x-example": 1
+				}, {
+					"name": "pageSize",
+					"in": "query",
+					"description": "",
+					"required": false,
+					"type": "integer",
+					"x-example": 10
+				}, {
+					"name": "name",
+					"in": "query",
+					"description": "",
+					"required": false,
+					"type": "string",
+					"x-example": "超级管理员"
+				}],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {
+								"code": {
+									"type": "integer"
+								},
+								"message": {
+									"type": "string"
+								},
+								"data": {
+									"type": "object",
+									"properties": {
+										"pageData": {
+											"type": "array",
+											"items": {
+												"type": "object",
+												"properties": {
+													"id": {
+														"type": "integer"
+													},
+													"code": {
+														"type": "string"
+													},
+													"name": {
+														"type": "string"
+													},
+													"enable": {
+														"type": "boolean"
+													},
+													"permissionIds": {
+														"type": "array",
+														"items": {
+															"type": "integer"
+														}
+													}
+												},
+												"required": ["id", "code", "name", "enable", "permissionIds"]
+											}
+										},
+										"total": {
+											"type": "integer"
+										}
+									},
+									"required": ["pageData", "total"]
+								},
+								"originUrl": {
+									"type": "string"
+								}
+							},
+							"required": ["code", "message", "data", "originUrl"]
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"produces": ["application/json"]
+			}
+		},
+		"/role/{id}": {
+			"delete": {
+				"summary": "删除角色",
+				"deprecated": false,
+				"description": "",
+				"tags": ["角色"],
+				"parameters": [{
+					"name": "id",
+					"in": "path",
+					"description": "",
+					"required": true,
+					"type": "string",
+					"x-example": "1"
+				}],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {}
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"produces": ["application/json"]
+			},
+			"patch": {
+				"summary": "修改角色",
+				"deprecated": false,
+				"description": "",
+				"tags": ["角色"],
+				"parameters": [{
+					"name": "id",
+					"in": "path",
+					"description": "",
+					"required": true,
+					"type": "string",
+					"x-example": "1"
+				}],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {}
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"produces": ["application/json"]
+			}
+		},
+		"/role/users/remove/{id}": {
+			"patch": {
+				"summary": "取消分配角色-批量",
+				"deprecated": false,
+				"description": "",
+				"tags": ["角色"],
+				"parameters": [{
+					"name": "id",
+					"in": "path",
+					"description": "",
+					"required": true,
+					"type": "string",
+					"x-example": "1"
+				}, {
+					"name": "body",
+					"in": "body",
+					"schema": {
+						"type": "object",
+						"properties": {}
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {}
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"consumes": ["application/json"],
+				"produces": ["application/json"]
+			}
+		},
+		"/role/users/add/{id}": {
+			"patch": {
+				"summary": "分配角色-批量",
+				"deprecated": false,
+				"description": "",
+				"tags": ["角色"],
+				"parameters": [{
+					"name": "id",
+					"in": "path",
+					"description": "",
+					"required": true,
+					"type": "string",
+					"x-example": "1"
+				}, {
+					"name": "body",
+					"in": "body",
+					"schema": {
+						"type": "object",
+						"properties": {}
+					}
+				}],
+				"responses": {
+					"200": {
+						"description": "",
+						"headers": {},
+						"schema": {
+							"type": "object",
+							"properties": {}
+						}
+					}
+				},
+				"security": [{
+					"bearer": []
+				}],
+				"consumes": ["application/json"],
+				"produces": ["application/json"]
+			}
+		}
+	},
+	"swagger": "2.0",
+	"basePath": null,
+	"definitions": {},
+	"securityDefinitions": {
+		"bearer": {
+			"type": "apiKey",
+			"name": "Authorization",
+			"in": "header"
+		}
+	},
+	"x-components": {}
+}
