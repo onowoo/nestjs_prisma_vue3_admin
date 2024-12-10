@@ -1,6 +1,6 @@
 ## 介绍
 
-后端 nestjs+prisma+swagger（自动生成接口文档）
+后端 nestjs+prisma+redis+swagger（自动生成接口文档）
 
 后台前端用[v3-admin](https://github.com/un-pany/v3-admin)对接，新增了一些基础功能
 
@@ -32,6 +32,11 @@ MAIL_HOST=smtp.example.com
 MAIL_USER=your-email@example.com
 MAIL_PASSWORD=your-password
 MAIL_FROM=noreply@example.com
+
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_USERNAME=default #redis6以下不用配置
+REDIS_PASSWORD=123456
 ```
 
 ```bash
