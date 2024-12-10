@@ -144,6 +144,8 @@ export class AuthService {
         24 * 60 * 60 // 24小时过期
       );
 
+      await this.redisService.set(`currentRoleId`, targetRole.id.toString(), 24 * 60 * 60);
+
       // 生成新的 token
       const token = this.generateToken(userId, roleCode);
 

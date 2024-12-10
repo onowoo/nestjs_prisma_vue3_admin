@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
   ParseIntPipe,
+  NotFoundException,
 } from '@nestjs/common';
 import { RoleService } from './role.service';
 import { CreateRoleDto } from './dto/create-role.dto';
@@ -17,12 +18,16 @@ import { QueryRoleDto } from './dto/query-role.dto';
 import { AssignUsersDto } from './dto/assign-users.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { RedisService } from '../redis/redis.service';
 
 @ApiTags('角色')
 @UseGuards(JwtAuthGuard)
 @Controller('role')
 export class RoleController {
-  constructor(private readonly roleService: RoleService) {}
+  constructor(
+    private readonly roleService: RoleService,
+    private readonly redisService: RedisService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: '角色列表-all' })
@@ -120,7 +125,13 @@ export class RoleController {
   @Get('permissions/tree')
   @ApiOperation({ summary: '获取权限树' })
   async getRolePermissions() {
-    const data = await this.roleService.findRolePermissions();
+    const roleId = await this.redisService.get('currentRoleId');
+
+    if (!roleId) {
+      throw new NotFoundException('角色 ID 未找到');
+    }
+
+    const data = await this.roleService.findRolePermissions(Number(roleId));
     return {
       code: 200,
       message: '获取成功',

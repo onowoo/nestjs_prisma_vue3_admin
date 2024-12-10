@@ -10,7 +10,9 @@ export class RedisService {
     this.redis = new Redis({
       host: this.configService.get('REDIS_HOST'),
       port: +this.configService.get('REDIS_PORT'),
-      username: this.configService.get('REDIS_USERNAME'),
+      ...(parseInt(this.configService.get('REDIS_VERSION'), 10) >= 6 ? {
+        username: this.configService.get('REDIS_USERNAME'),
+      } : {}),
       password: this.configService.get('REDIS_PASSWORD'),
     });
   }

@@ -188,7 +188,13 @@ export class RoleService {
     return true;
   }
 
-  async findRolePermissions() {
+  async findRolePermissions(roleId: number) {
+    // 获取角色的权限
+    const role = await this.prisma.role.findUnique({
+      where: { id: roleId },
+      include: { permissions: true },
+    });
+
     // 获取所有权限
     const permissions = await this.prisma.permission.findMany({
       where: {
@@ -199,20 +205,22 @@ export class RoleService {
       },
     });
 
-    // 构建树形结构
-    const buildTree = (parentId: number | null = null): any[] => {
-      return permissions
-        .filter(item => item.parentId === parentId)
-        .map(item => ({
-          ...item,
-          children: buildTree(item.id),
-        }))
-        .filter(item => item.children.length > 0 || item.type === 'MENU');
-    };
+    // 如果角色没有权限，返回所有权限的树形结构
+    if (!role || role.permissions.length === 0) {
+      return this.buildTree(permissions);
+    }
 
-    // 获取根级菜单
-    const menuTree = buildTree(null);
+    // 构建角色权限的树形结构
+    return this.buildTree(role.permissions);
+  }
 
-    return menuTree;
+  private buildTree(permissions: any[], parentId: number | null = null): any[] {
+    return permissions
+      .filter(item => item.parentId === parentId)
+      .map(item => ({
+        ...item,
+        children: this.buildTree(permissions, item.id),
+      }))
+      .filter(item => item.children.length > 0 || item.type === 'MENU');
   }
 }
