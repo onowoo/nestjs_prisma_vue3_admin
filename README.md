@@ -2,7 +2,7 @@
 
 后端 nestjs+prisma+redis+swagger（自动生成接口文档）
 
-后台前端用[v3-admin](https://github.com/un-pany/v3-admin)对接，新增了一些基础功能
+后台前端用[vue-naive-admin]([https://github.com/un-pany/v3-admin](https://github.com/zclzone/vue-naive-admin))对接，新增了一些基础功能
 
 ## 安装项目
 
